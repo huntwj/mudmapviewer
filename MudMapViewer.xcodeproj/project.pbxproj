@@ -7,14 +7,30 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B8109A521C02A7E400035012 /* MapExit.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8109A511C02A7E400035012 /* MapExit.swift */; };
+		B8109A531C02A7E400035012 /* MapExit.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8109A511C02A7E400035012 /* MapExit.swift */; };
+		B8109A541C02A7E400035012 /* MapExit.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8109A511C02A7E400035012 /* MapExit.swift */; };
 		B83F31F41BF6DA1000EFE2A6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83F31F31BF6DA1000EFE2A6 /* AppDelegate.swift */; };
 		B83F31F61BF6DA1000EFE2A6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83F31F51BF6DA1000EFE2A6 /* ViewController.swift */; };
 		B83F31F81BF6DA1000EFE2A6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B83F31F71BF6DA1000EFE2A6 /* Assets.xcassets */; };
 		B83F31FB1BF6DA1000EFE2A6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B83F31F91BF6DA1000EFE2A6 /* Main.storyboard */; };
 		B83F32061BF6DA1000EFE2A6 /* MudMapViewerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83F32051BF6DA1000EFE2A6 /* MudMapViewerTests.swift */; };
-		B83F32111BF6DA1000EFE2A6 /* MudMapViewerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83F32101BF6DA1000EFE2A6 /* MudMapViewerUITests.swift */; };
 		B83F321F1BF6EA5500EFE2A6 /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B83F321E1BF6EA5500EFE2A6 /* SQLite.framework */; };
 		B83F32231BF6EBC900EFE2A6 /* SQLite.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = B83F32221BF6EBC900EFE2A6 /* SQLite.framework.dSYM */; };
+		B83F32261BF6F91600EFE2A6 /* MapDb.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83F32251BF6F91600EFE2A6 /* MapDb.swift */; };
+		B83F32271BF6F91600EFE2A6 /* MapDb.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83F32251BF6F91600EFE2A6 /* MapDb.swift */; };
+		B83F32281BF6F91600EFE2A6 /* MapDb.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83F32251BF6F91600EFE2A6 /* MapDb.swift */; };
+		B83F322A1BF6FB5D00EFE2A6 /* MapRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83F32291BF6FB5D00EFE2A6 /* MapRoom.swift */; };
+		B83F322B1BF6FB5D00EFE2A6 /* MapRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83F32291BF6FB5D00EFE2A6 /* MapRoom.swift */; };
+		B83F322C1BF6FB5D00EFE2A6 /* MapRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83F32291BF6FB5D00EFE2A6 /* MapRoom.swift */; };
+		B897DD011BFBEC91009BD086 /* Coordinate3D.swift in Sources */ = {isa = PBXBuildFile; fileRef = B897DD001BFBEC91009BD086 /* Coordinate3D.swift */; };
+		B897DD021BFBEC91009BD086 /* Coordinate3D.swift in Sources */ = {isa = PBXBuildFile; fileRef = B897DD001BFBEC91009BD086 /* Coordinate3D.swift */; };
+		B897DD031BFBEC91009BD086 /* Coordinate3D.swift in Sources */ = {isa = PBXBuildFile; fileRef = B897DD001BFBEC91009BD086 /* Coordinate3D.swift */; };
+		B8A77AAB1C02751900D4FC88 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8A77AAA1C02751900D4FC88 /* MapView.swift */; };
+		B8A77AAC1C02751900D4FC88 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8A77AAA1C02751900D4FC88 /* MapView.swift */; };
+		B8AAE3AD1BFB0841001F6482 /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B83F321E1BF6EA5500EFE2A6 /* SQLite.framework */; };
+		B8AAE3AE1BFB084B001F6482 /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B83F321E1BF6EA5500EFE2A6 /* SQLite.framework */; };
+		B8AAE3AF1BFB0AF5001F6482 /* MudMapViewerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83F32101BF6DA1000EFE2A6 /* MudMapViewerUITests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +64,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		B8109A511C02A7E400035012 /* MapExit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapExit.swift; sourceTree = "<group>"; };
 		B83F31F01BF6DA1000EFE2A6 /* MudMapViewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MudMapViewer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B83F31F31BF6DA1000EFE2A6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B83F31F51BF6DA1000EFE2A6 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -62,6 +79,10 @@
 		B83F32121BF6DA1000EFE2A6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B83F321E1BF6EA5500EFE2A6 /* SQLite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SQLite.framework; path = Carthage/Build/Mac/SQLite.framework; sourceTree = "<group>"; };
 		B83F32221BF6EBC900EFE2A6 /* SQLite.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = SQLite.framework.dSYM; path = Carthage/Build/Mac/SQLite.framework.dSYM; sourceTree = "<group>"; };
+		B83F32251BF6F91600EFE2A6 /* MapDb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapDb.swift; sourceTree = "<group>"; };
+		B83F32291BF6FB5D00EFE2A6 /* MapRoom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapRoom.swift; sourceTree = "<group>"; };
+		B897DD001BFBEC91009BD086 /* Coordinate3D.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Coordinate3D.swift; sourceTree = "<group>"; };
+		B8A77AAA1C02751900D4FC88 /* MapView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +98,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B8AAE3AE1BFB084B001F6482 /* SQLite.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,6 +106,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B8AAE3AD1BFB0841001F6482 /* SQLite.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -115,8 +138,10 @@
 		B83F31F21BF6DA1000EFE2A6 /* MudMapViewer */ = {
 			isa = PBXGroup;
 			children = (
+				B83F32241BF6F8EC00EFE2A6 /* MapDb */,
 				B83F31F31BF6DA1000EFE2A6 /* AppDelegate.swift */,
 				B83F31F51BF6DA1000EFE2A6 /* ViewController.swift */,
+				B8A77AAA1C02751900D4FC88 /* MapView.swift */,
 				B83F31F71BF6DA1000EFE2A6 /* Assets.xcassets */,
 				B83F31F91BF6DA1000EFE2A6 /* Main.storyboard */,
 				B83F31FC1BF6DA1000EFE2A6 /* Info.plist */,
@@ -140,6 +165,17 @@
 				B83F32121BF6DA1000EFE2A6 /* Info.plist */,
 			);
 			path = MudMapViewerUITests;
+			sourceTree = "<group>";
+		};
+		B83F32241BF6F8EC00EFE2A6 /* MapDb */ = {
+			isa = PBXGroup;
+			children = (
+				B83F32251BF6F91600EFE2A6 /* MapDb.swift */,
+				B83F32291BF6FB5D00EFE2A6 /* MapRoom.swift */,
+				B897DD001BFBEC91009BD086 /* Coordinate3D.swift */,
+				B8109A511C02A7E400035012 /* MapExit.swift */,
+			);
+			name = MapDb;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -291,8 +327,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B897DD011BFBEC91009BD086 /* Coordinate3D.swift in Sources */,
+				B8A77AAB1C02751900D4FC88 /* MapView.swift in Sources */,
 				B83F31F61BF6DA1000EFE2A6 /* ViewController.swift in Sources */,
+				B8109A521C02A7E400035012 /* MapExit.swift in Sources */,
 				B83F31F41BF6DA1000EFE2A6 /* AppDelegate.swift in Sources */,
+				B83F32261BF6F91600EFE2A6 /* MapDb.swift in Sources */,
+				B83F322A1BF6FB5D00EFE2A6 /* MapRoom.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -300,7 +341,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B8109A531C02A7E400035012 /* MapExit.swift in Sources */,
+				B897DD021BFBEC91009BD086 /* Coordinate3D.swift in Sources */,
+				B83F32271BF6F91600EFE2A6 /* MapDb.swift in Sources */,
 				B83F32061BF6DA1000EFE2A6 /* MudMapViewerTests.swift in Sources */,
+				B83F322B1BF6FB5D00EFE2A6 /* MapRoom.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -308,7 +353,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B83F32111BF6DA1000EFE2A6 /* MudMapViewerUITests.swift in Sources */,
+				B8109A541C02A7E400035012 /* MapExit.swift in Sources */,
+				B897DD031BFBEC91009BD086 /* Coordinate3D.swift in Sources */,
+				B83F32281BF6F91600EFE2A6 /* MapDb.swift in Sources */,
+				B8A77AAC1C02751900D4FC88 /* MapView.swift in Sources */,
+				B83F322C1BF6FB5D00EFE2A6 /* MapRoom.swift in Sources */,
+				B8AAE3AF1BFB0AF5001F6482 /* MudMapViewerUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -456,6 +506,10 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				INFOPLIST_FILE = MudMapViewerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = net.williamjhunt.MudMapViewerTests;
@@ -469,6 +523,10 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				INFOPLIST_FILE = MudMapViewerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = net.williamjhunt.MudMapViewerTests;
@@ -481,6 +539,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				INFOPLIST_FILE = MudMapViewerUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = net.williamjhunt.MudMapViewerUITests;
@@ -494,6 +556,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				INFOPLIST_FILE = MudMapViewerUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = net.williamjhunt.MudMapViewerUITests;
@@ -522,6 +588,7 @@
 				B83F32171BF6DA1000EFE2A6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B83F32181BF6DA1000EFE2A6 /* Build configuration list for PBXNativeTarget "MudMapViewerTests" */ = {
 			isa = XCConfigurationList;
@@ -530,6 +597,7 @@
 				B83F321A1BF6DA1000EFE2A6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B83F321B1BF6DA1000EFE2A6 /* Build configuration list for PBXNativeTarget "MudMapViewerUITests" */ = {
 			isa = XCConfigurationList;
@@ -538,6 +606,7 @@
 				B83F321D1BF6DA1000EFE2A6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
