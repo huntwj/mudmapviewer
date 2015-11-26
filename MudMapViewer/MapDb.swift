@@ -38,8 +38,9 @@ class MapDb {
         return nil
     }
     
-    func getRoomsByZoneId(targetZoneId : Int64) -> [MapRoom] {
+    func getRoomsInRectByZoneId(targetZoneId : Int64, x1: Int64, y1: Int64, x2: Int64, y2: Int64) -> [MapRoom] {
         let roomTable = Table("ObjectTbl")
+        let exitTable = Table("ExitTbl")
         let objId = Expression<Int64>("ObjID")
         let zoneId = Expression<Int64>("ZoneID")
         let name = Expression<String>("Name")
@@ -49,16 +50,40 @@ class MapDb {
         let y = Expression<Int64>("Y")
         let z = Expression<Int64>("Z")
         
-        let query = roomTable.filter(zoneId == targetZoneId)
-        var rooms: [MapRoom] = []
-        for room in _db.prepare(query) {
-            rooms.append(MapRoom(db: self, id: room[objId], zoneId: room[zoneId],name: room[name], roomDesc: room[desc], location: Coordinate3D<Int64>(x: room[x], y: room[y], z: room[z]), pathingEntryCost: 0.0, color: colorFromInt(room[color]), enabled: true))
+        let exitIdCol = Expression<Int64>("ExitID")
+        let toIdCol = Expression<Int64>("ToID");
+        let fromIdCol = Expression<Int64>("FromID")
+        let directionCol = Expression<Int>("DirType")
+        
+        let query = roomTable.filter(zoneId == targetZoneId).filter(x >= x1).filter(x <= x2).filter(y >= y1).filter(y <= y2)
+//        query.join(exitTable, on: fromId == objId)
+//        Swift.print("Query: \(query)")
+        var roomsMap = [Int64: MapRoom]()
+        let stmt = _db.prepare(query)
+//        Swift.print("Statement: \(stmt)")
+        let start = NSDate.timeIntervalSinceReferenceDate()
+        for room in stmt {
+//            Swift.print("row: \(room)")
+            roomsMap[room[objId]] = MapRoom(db: self, id: room[objId], zoneId: room[zoneId],name: room[name], roomDesc: room[desc], location: Coordinate3D<Int64>(x: room[x], y: room[y], z: room[z]), pathingEntryCost: 0.0, color: colorFromInt(room[color]), enabled: true)
         }
         
-        return rooms
+        var stop = NSDate.timeIntervalSinceReferenceDate()
+        var duration = stop - start
+        Swift.print(": \(duration) s")
+        
+        let exitQuery = exitTable.filter(roomsMap.keys.contains(fromIdCol))
+        for exit in _db.prepare(exitQuery) {
+            roomsMap[exit[fromIdCol]]?.addExit(MapExit(db: self, id: exit[exitIdCol], fromRoomId: exit[fromIdCol], toRoomId: exit[toIdCol], direction: exit[directionCol]+1))
+        }
+        Swift.print("Loaded \(roomsMap.count) rooms")
+        stop = NSDate.timeIntervalSinceReferenceDate()
+        duration = stop - start
+        Swift.print("> \(duration) s")
+        return roomsMap.values.reverse()
     }
     
     func getExitsForRoomId(roomId: Int64) -> [MapExit] {
+        Swift.print("This is really inefficient?!")
         let exitsTable = Table("ExitTbl")
         let exitIdCol = Expression<Int64>("ExitID")
         let fromIdCol = Expression<Int64>("FromID")

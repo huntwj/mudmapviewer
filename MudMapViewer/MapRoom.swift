@@ -53,6 +53,18 @@ public class MapRoom : CustomStringConvertible, Hashable {
         return _id.hashValue
     }
     
+    public var locationAsPoint: NSPoint {
+        return NSPoint(x: CGFloat(location.x), y: CGFloat(location.y))
+    }
+    
+    func addExit(exit: MapExit) {
+        if var exits = _exits {
+            exits.append(exit)
+        } else {
+            _exits = [exit]
+        }
+    }
+    
 }
 
 public func ==(lhs: MapRoom, rhs: MapRoom) -> Bool {
