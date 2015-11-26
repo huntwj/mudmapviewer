@@ -20,7 +20,7 @@ public class MapRoom : CustomStringConvertible, Hashable {
     let color: NSColor
     let _enabled: Bool
     
-    var _exits: [MapExit]?
+    var _exits = [MapExit]()
     
     init(db: MapDb, id:Int64, zoneId: Int64, name: String, roomDesc: String, location: Coordinate3D<Int64>, pathingEntryCost: Float64, color: NSColor, enabled: Bool) {
         self._db = db
@@ -32,14 +32,6 @@ public class MapRoom : CustomStringConvertible, Hashable {
         self._pathingCost = pathingEntryCost
         self.color = color
         self._enabled = enabled
-    }
-    
-    internal var exits: [MapExit] {
-        if let ex = _exits {
-            return ex
-        } else {
-            return []
-        }
     }
     
     public var description: String {
@@ -55,11 +47,7 @@ public class MapRoom : CustomStringConvertible, Hashable {
     }
     
     func addExit(exit: MapExit) {
-        if var exits = _exits {
-            exits.append(exit)
-        } else {
-            _exits = [exit]
-        }
+        self._exits.append(exit)
     }
     
 }

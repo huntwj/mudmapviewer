@@ -35,8 +35,14 @@ public class MapView : NSView
             if let roomIdx = Int64(str as String) {
                 if (_currentRoomId != roomIdx) {
                     _currentRoomId = roomIdx
-                    _centerLocation = nil
-                    asyncLoadMapElements()
+                    if let newRoom = _rooms[roomIdx] {
+                        _currentRoom = newRoom
+                        _centerLocation = newRoom.location
+                    } else {
+                        _currentRoomId = roomIdx
+                        _centerLocation = nil
+                        asyncLoadMapElements()
+                    }
                 }
             } else {
                 Swift.print("Couldn't get as number: \(str)");
@@ -119,7 +125,7 @@ public class MapView : NSView
             if let center = centerLocation {
                 for (_, room) in _rooms {
                     if (center.z == room.location.z) {
-                        for exit in room.exits {
+                        for exit in room._exits {
                             drawExit(exit, rect: dirtyRect)
                         }
                     }
@@ -160,10 +166,6 @@ public class MapView : NSView
     
     func drawExit(exit: MapExit, rect: NSRect) {
         if (exit.direction < 9) {
-            let dir = exit.direction
-            if (dir != 1 && dir != 3 && dir != 5 && dir != 7) {
-                Swift.print("Direction: \(exit.direction)")
-            }
             if let fromRoom = exit.fromRoom {
                 if let toRoom = exit.toRoom {
                     if (toRoom.zoneId == fromRoom.zoneId) {
@@ -176,12 +178,19 @@ public class MapView : NSView
                                     NSColor.blackColor().setStroke()
                                     path.stroke()
                                 }
+                            } else {
+                                Swift.print("Skipping \(exit) because toLoc was nil.")
                             }
+                        } else {
+                            Swift.print("Skipping \(exit) because fromLoc was nil.")
+
                         }
-                    } else {
-                        // TODO: Draw exit stub for placeholder.
                     }
+                } else {
+                    Swift.print("Skipping \(exit) because neither toRoom is nil.")
                 }
+            } else {
+                Swift.print("Skipping \(exit) because neither fromRoom is nil.")
             }
         }
     }
