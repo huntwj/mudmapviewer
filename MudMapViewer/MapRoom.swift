@@ -35,9 +35,6 @@ public class MapRoom : CustomStringConvertible, Hashable {
     }
     
     internal var exits: [MapExit] {
-        if (_exits == nil) {
-            _exits = _db.getExitsForRoomId(_id)
-        }
         if let ex = _exits {
             return ex
         } else {

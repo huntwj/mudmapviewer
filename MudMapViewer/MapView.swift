@@ -17,9 +17,47 @@ class MapView : NSView
     var _centerLocation: Coordinate3D<Int64>?
     var _zLevel: Int64?
     
-    var _rooms: [MapRoom] = []
+    var _rooms = [Int64: MapRoom]()
     
     var _zoom: CGFloat = 10
+    
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        
+        asyncLoadMapElements()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        
+        asyncLoadMapElements()
+    }
+    
+    func asyncLoadMapElements() {
+        let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
+        dispatch_async(dispatch_get_global_queue(priority, 0)) {
+            
+            let rooms = self.loadMapElements()
+            dispatch_async(dispatch_get_main_queue()) {
+                self._rooms = rooms
+                self.setNeedsDisplayInRect(self.bounds)
+            }
+        }
+    }
+    
+    func loadMapElements() -> [Int64: MapRoom] {
+        var zoneRooms = [Int64: MapRoom]()
+        do {
+            let db = try MapDb()
+            _currentRoom = db.getRoomById(_currentRoomId)
+            if let centerRoom = _currentRoom {
+                zoneRooms = db.getRoomsByZoneId(centerRoom.zoneId)
+            }
+        } catch {
+            Swift.print("Error loading database.")
+        }
+        return zoneRooms
+    }
     
     override func mouseDown(theEvent: NSEvent) {
         Swift.print(theEvent)
@@ -33,8 +71,7 @@ class MapView : NSView
             _centerLocation = Coordinate3D<Int64>(x: Int64(newLoc.x), y: Int64(newLoc.y), z: z)
             _currentRoom = nil
         }
-        Swift.print("Center location: \(_centerLocation)")
-        Swift.print("Current room: \(_currentRoom)")
+
         self.setNeedsDisplayInRect(bounds)
         
     }
@@ -42,10 +79,9 @@ class MapView : NSView
     func map2DCoordsFromWindowCoords(loc: NSPoint) -> NSPoint? {
         if let center = centerLocation {
             let x = (loc.x - self.bounds.midX) * _zoom + CGFloat(center.x)
-            let y = -(loc.y - self.bounds.midY) * _zoom + CGFloat(center.y)
+            let y = (loc.y - self.bounds.midY) * _zoom + CGFloat(center.y)
             let map2DCoords = NSPoint(x: x, y: y)
             
-            Swift.print("Window coords \(loc) -> Map 2D Coords \(map2DCoords) -> windowCoords \(windowCoordsFromMap2DCoords(map2DCoords))")
             return map2DCoords
         }
         return nil
@@ -64,38 +100,27 @@ class MapView : NSView
     }
     
     override func drawRect(dirtyRect: NSRect) {
-        let start = NSDate.timeIntervalSinceReferenceDate()
         do {
             let db = try MapDb()
             _currentRoom = db.getRoomById(_currentRoomId)
-            if let centerRoom = _currentRoom {
-                if let point1 = map2DCoordsFromWindowCoords(NSPoint(x:bounds.minX, y:bounds.minY)) {
-                    Swift.print("point1: \(point1)")
-                    if let point2 = map2DCoordsFromWindowCoords(NSPoint(x:bounds.maxX, y:bounds.maxY)) {
-                        Swift.print("point2: \(point2)")
-                        _rooms = db.getRoomsInRectByZoneId(centerRoom.zoneId, x1: Int64(point1.x), y1: Int64(point1.y),x2: Int64(point2.x), y2: Int64(point2.y))
-                        for room in _rooms {
-                            if (centerRoom.location.z == room.location.z) {
-                                for exit in room.exits {
-                                    drawExit(exit, rect: dirtyRect)
-                                }
-                            }
+            if let center = centerLocation {
+                for (_, room) in _rooms {
+                    if (center.z == room.location.z) {
+                        for exit in room.exits {
+                            drawExit(exit, rect: dirtyRect)
                         }
-                        
-                        for room in _rooms {
-                            drawRoom(room, rect: dirtyRect)
-                        }
-                        
-                        markCurrentRoom()
                     }
                 }
+                
+                for (_, room) in _rooms {
+                    drawRoom(room, rect: dirtyRect)
+                }
+                
+                markCurrentRoom()
             }
         } catch {
             Swift.print("Error loading database.")
         }
-        let stop = NSDate.timeIntervalSinceReferenceDate()
-        let duration = stop - start
-        Swift.print("\(duration) secs")
     }
     
     var centerLocation: Coordinate3D<Int64>? {
@@ -131,11 +156,6 @@ class MapView : NSView
                     if (toRoom.zoneId == fromRoom.zoneId) {
                         if let fromLoc = roomDrawLocation(fromRoom) {
                             if let toLoc = roomDrawLocation(toRoom) {
-                                if (fromLoc.x != toLoc.x && fromLoc.y != toLoc.y) {
-//                                    Swift.print("id: \(exit._id)")
-//                                    Swift.print("fromLoc: \(fromLoc)")
-//                                    Swift.print("toLoc: \(toLoc)")
-                                }
                                 if (NSPointInRect(fromLoc, bounds) || NSPointInRect(toLoc, bounds)) {
                                     let path = NSBezierPath()
                                     path.moveToPoint(fromLoc)
