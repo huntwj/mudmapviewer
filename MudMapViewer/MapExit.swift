@@ -46,7 +46,7 @@ class MapExit : CustomStringConvertible, Hashable
     }
     
     var description: String {
-        return "Exit (\(_id)) from ?? to ??"
+        return "Exit (\(_id)) (\(direction)) from \(_fromRoomId) to \(_toRoomId)"
     }
 }
 
