@@ -30,7 +30,6 @@ public class MapView : NSView
 
     
     public func updateState(notification: NSNotification) {
-        Swift.print("updateState called: \(notification)")
         if let str = notification.object as? NSString {
             if let roomIdx = Int64(str as String) {
                 if (_currentRoomId != roomIdx) {
@@ -38,17 +37,14 @@ public class MapView : NSView
                     if let newRoom = _rooms[roomIdx] {
                         _currentRoom = newRoom
                         _centerLocation = newRoom.location
+                        setNeedsDisplayInRect(bounds)
                     } else {
                         _currentRoomId = roomIdx
                         _centerLocation = nil
                         asyncLoadMapElements()
                     }
                 }
-            } else {
-                Swift.print("Couldn't get as number: \(str)");
             }
-        } else {
-            Swift.print("Couldn't get object");
         }
     }
     
@@ -97,9 +93,10 @@ public class MapView : NSView
     
     func map2DCoordsFromWindowCoords(loc: NSPoint) -> NSPoint? {
         if let center = centerLocation {
-            let x = (loc.x - self.bounds.midX) * _zoom + CGFloat(center.x)
-            let y = (loc.y - self.bounds.midY) * _zoom + CGFloat(center.y)
-            let map2DCoords = NSPoint(x: x, y: y)
+            let map2DCoords = NSPoint(
+                x: (loc.x - self.bounds.midX) * _zoom + CGFloat(center.x),
+                y: (loc.y - self.bounds.midY) * _zoom + CGFloat(center.y)
+            )
             
             return map2DCoords
         }
@@ -166,31 +163,22 @@ public class MapView : NSView
     
     func drawExit(exit: MapExit, rect: NSRect) {
         if (exit.direction < 9) {
-            if let fromRoom = exit.fromRoom {
-                if let toRoom = exit.toRoom {
-                    if (toRoom.zoneId == fromRoom.zoneId) {
-                        if let fromLoc = roomDrawLocation(fromRoom) {
-                            if let toLoc = roomDrawLocation(toRoom) {
-                                if (NSPointInRect(fromLoc, bounds) || NSPointInRect(toLoc, bounds)) {
-                                    let path = NSBezierPath()
-                                    path.moveToPoint(fromLoc)
-                                    path.lineToPoint(toLoc)
-                                    NSColor.blackColor().setStroke()
-                                    path.stroke()
-                                }
-                            } else {
-                                Swift.print("Skipping \(exit) because toLoc was nil.")
-                            }
-                        } else {
-                            Swift.print("Skipping \(exit) because fromLoc was nil.")
-
+            if let fromRoom = exit.fromRoom, toRoom = exit.toRoom {
+                if (toRoom.zoneId == fromRoom.zoneId) {
+                    if let fromLoc = roomDrawLocation(fromRoom), toLoc = roomDrawLocation(toRoom) {
+                        if (NSPointInRect(fromLoc, bounds) || NSPointInRect(toLoc, bounds)) {
+                            let path = NSBezierPath()
+                            path.moveToPoint(fromLoc)
+                            path.lineToPoint(toLoc)
+                            NSColor.blackColor().setStroke()
+                            path.stroke()
                         }
+                    } else {
+                        Swift.print("Skipping \(exit) because fromLoc or toLoc was nil.")
                     }
-                } else {
-                    Swift.print("Skipping \(exit) because neither toRoom is nil.")
                 }
             } else {
-                Swift.print("Skipping \(exit) because neither fromRoom is nil.")
+                Swift.print("Skipping \(exit) because either fromRoom or toRoom is nil.")
             }
         }
     }
