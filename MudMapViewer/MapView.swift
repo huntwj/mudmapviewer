@@ -9,9 +9,9 @@
 import Foundation
 import AppKit
 
-class MapView : NSView
+public class MapView : NSView
 {
-    let _currentRoomId: Int64 = 1170
+    var _currentRoomId: Int64 = 1170
     
     var _currentRoom: MapRoom?
     var _centerLocation: Coordinate3D<Int64>?
@@ -21,16 +21,29 @@ class MapView : NSView
     
     var _zoom: CGFloat = 10
     
-    override init(frame frameRect: NSRect) {
-        super.init(frame: frameRect)
-        
+    required public init?(coder: NSCoder) {
+        super.init(coder: coder)
+
+        NSDistributedNotificationCenter.defaultCenter().addObserver(self, selector: "updateState:", name: "MapViewUpdate", object: nil)
         asyncLoadMapElements()
     }
 
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        
-        asyncLoadMapElements()
+    
+    public func updateState(notification: NSNotification) {
+        Swift.print("updateState called: \(notification)")
+        if let str = notification.object as? NSString {
+            if let roomIdx = Int64(str as String) {
+                if (_currentRoomId != roomIdx) {
+                    _currentRoomId = roomIdx
+                    _centerLocation = nil
+                    asyncLoadMapElements()
+                }
+            } else {
+                Swift.print("Couldn't get as number: \(str)");
+            }
+        } else {
+            Swift.print("Couldn't get object");
+        }
     }
     
     func asyncLoadMapElements() {
@@ -59,7 +72,7 @@ class MapView : NSView
         return zoneRooms
     }
     
-    override func mouseDown(theEvent: NSEvent) {
+    override public func mouseDown(theEvent: NSEvent) {
         Swift.print(theEvent)
         let z: Int64
         if let center = centerLocation {
@@ -99,7 +112,7 @@ class MapView : NSView
         return nil
     }
     
-    override func drawRect(dirtyRect: NSRect) {
+    override public func drawRect(dirtyRect: NSRect) {
         do {
             let db = try MapDb()
             _currentRoom = db.getRoomById(_currentRoomId)
