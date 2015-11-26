@@ -64,8 +64,12 @@ class MapDb {
         
         
         let exitQuery = exitTable.filter(roomsMap.keys.contains(fromIdCol))
-        for exit in _db.prepare(exitQuery) {
-            roomsMap[exit[fromIdCol]]?.addExit(MapExit(db: self, id: exit[exitIdCol], fromRoomId: exit[fromIdCol], toRoomId: exit[toIdCol], direction: exit[directionCol]+1))
+        let allExits = _db.prepare(exitQuery)
+        for exit in allExits {
+            let mapExit = MapExit(db: self, id: exit[exitIdCol], fromRoomId: exit[fromIdCol], toRoomId: exit[toIdCol], direction: exit[directionCol]+1)
+            mapExit._toRoom = roomsMap[exit[toIdCol]]
+            mapExit._fromRoom = roomsMap[exit[fromIdCol]]
+            roomsMap[exit[fromIdCol]]?.addExit(mapExit)
         }
 
         return roomsMap
