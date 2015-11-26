@@ -84,6 +84,5 @@ class MapDb {
         let blueInt = left % byteSize
         
         return NSColor(red: (CGFloat(redInt) / 255.0), green: (CGFloat(greenInt) / 255.0), blue: (CGFloat(blueInt) / 255.0), alpha: 1.0)
-
     }
 }

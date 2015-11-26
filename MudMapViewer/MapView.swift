@@ -11,7 +11,7 @@ import AppKit
 
 public class MapView : NSView
 {
-    var _currentRoomId: Int64 = 1170
+    var _currentRoomId: Int64?
     
     var _currentRoom: MapRoom?
     var _centerLocation: Coordinate3D<Int64>?
@@ -64,9 +64,11 @@ public class MapView : NSView
         var zoneRooms = [Int64: MapRoom]()
         do {
             let db = try MapDb()
-            _currentRoom = db.getRoomById(_currentRoomId)
-            if let centerRoom = _currentRoom {
-                zoneRooms = db.getRoomsByZoneId(centerRoom.zoneId)
+            if let currentRoomId = _currentRoomId {
+                _currentRoom = db.getRoomById(currentRoomId)
+                if let centerRoom = _currentRoom {
+                    zoneRooms = db.getRoomsByZoneId(centerRoom.zoneId)
+                }
             }
         } catch {
             Swift.print("Error loading database.")
@@ -116,26 +118,20 @@ public class MapView : NSView
     }
     
     override public func drawRect(dirtyRect: NSRect) {
-        do {
-            let db = try MapDb()
-            _currentRoom = db.getRoomById(_currentRoomId)
-            if let center = centerLocation {
-                for (_, room) in _rooms {
-                    if (center.z == room.location.z) {
-                        for exit in room._exits {
-                            drawExit(exit, rect: dirtyRect)
-                        }
+        if let center = centerLocation {
+            for (_, room) in _rooms {
+                if (center.z == room.location.z) {
+                    for exit in room._exits {
+                        drawExit(exit, rect: dirtyRect)
                     }
                 }
-                
-                for (_, room) in _rooms {
-                    drawRoom(room, rect: dirtyRect)
-                }
-                
-                markCurrentRoom()
             }
-        } catch {
-            Swift.print("Error loading database.")
+            
+            for (_, room) in _rooms {
+                drawRoom(room, rect: dirtyRect)
+            }
+            
+            markCurrentRoom()
         }
     }
     
