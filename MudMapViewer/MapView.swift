@@ -11,7 +11,7 @@ import AppKit
 
 public class MapView : NSView
 {
-    var _currentRoomId: Int64?
+    var _currentRoomId: Int64? = 1174
     
     var _currentRoom: MapRoom?
     var _centerLocation: Coordinate3D<Int64>?
@@ -24,11 +24,12 @@ public class MapView : NSView
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
 
+	// TODO: Move this to AppDelegate or somewhere else more appropriate.
         NSDistributedNotificationCenter.defaultCenter().addObserver(self, selector: "updateState:", name: "MapViewUpdate", object: nil)
         asyncLoadMapElements()
     }
 
-    
+    // TODO: Move this to AppDelegate or somewhere else more appropriate.
     public func updateState(notification: NSNotification) {
         if let str = notification.object as? NSString {
             if let roomIdx = Int64(str as String) {
@@ -90,14 +91,13 @@ public class MapView : NSView
         }
 
         self.setNeedsDisplayInRect(bounds)
-        
     }
     
     func map2DCoordsFromWindowCoords(loc: NSPoint) -> NSPoint? {
         if let center = centerLocation {
             let map2DCoords = NSPoint(
                 x: (loc.x - self.bounds.midX) * _zoom + CGFloat(center.x),
-                y: (loc.y - self.bounds.midY) * _zoom + CGFloat(center.y)
+		y: -(loc.y - self.bounds.midY) * _zoom + CGFloat(center.y)
             )
             
             return map2DCoords
@@ -157,11 +157,29 @@ public class MapView : NSView
         }
     }
     
+    func headingFromDirection(direction: Int) -> Double {
+	let heading = M_PI_4 * Double(9 - direction) + M_PI_2
+	return heading
+    }
+
+    func offsetLocation(location: Coordinate3D<Int64>, direction dir: Int, distance dist: Double) -> NSPoint {
+	// East  : 3 -> 5 -> 6 -> 6 pi / 4 = 3 pi / 2 -> 4 pi / 2
+	// North : 1 -> 7 -> 8 -> 8 pi / 4 = 2 pi     -> 5 pi / 2
+	// West  : 7 -> 1 -> 2 -> 2 pi / 4 = pi / 2   -> pi
+	// South : 5 -> 3 -> 4 -> 4 pi / 4 = pi       -> 3 pi / 2
+	let heading = headingFromDirection(dir)
+	let x = Double(location.x) + cos(heading) * dist
+	let y = Double(location.y) - sin(heading) * dist
+
+	return NSPoint(x: x, y: y)
+    }
+
     func drawExit(exit: MapExit, rect: NSRect) {
         if (exit.direction < 9) {
             if let fromRoom = exit.fromRoom, toRoom = exit.toRoom {
+		if let fromLoc = roomDrawLocation(fromRoom) {
                 if (toRoom.zoneId == fromRoom.zoneId) {
-                    if let fromLoc = roomDrawLocation(fromRoom), toLoc = roomDrawLocation(toRoom) {
+			if let toLoc = roomDrawLocation(toRoom) {
                         if (NSPointInRect(fromLoc, bounds) || NSPointInRect(toLoc, bounds)) {
                             let path = NSBezierPath()
                             path.moveToPoint(fromLoc)
@@ -172,6 +190,20 @@ public class MapView : NSView
                     } else {
                         Swift.print("Skipping \(exit) because fromLoc or toLoc was nil.")
                     }
+		    } else {
+			// Zone boundary. Draw a line to an imaginary square.
+			let path = NSBezierPath()
+			path.moveToPoint(fromLoc)
+			let mapCoords = offsetLocation(fromRoom.location, direction: exit.direction, distance: 240)
+			if let targetLoc = windowCoordsFromMap2DCoords(mapCoords) {
+			    path.lineToPoint(targetLoc)
+			    NSColor.blackColor().setStroke()
+			    path.stroke();
+			    let zoneDot = NSBezierPath(ovalInRect: NSMakeRect(targetLoc.x - _zoom/3, targetLoc.y - _zoom/3, 2*_zoom/3, 2*_zoom/3))
+			    NSColor.grayColor().setFill()
+			    zoneDot.fill()
+			}
+		    }
                 }
             } else {
                 Swift.print("Skipping \(exit) because either fromRoom or toRoom is nil.")
