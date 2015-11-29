@@ -184,7 +184,12 @@ public class MapView : NSView
                             let path = NSBezierPath()
                             path.moveToPoint(fromLoc)
                             path.lineToPoint(toLoc)
+				if (fromRoom._id == _currentRoomId || toRoom._id == _currentRoomId) {
+				    path.lineWidth = 2;
+				    NSColor.redColor().setStroke()
+				} else {
                             NSColor.blackColor().setStroke()
+				}
                             path.stroke()
                         }
                     } else {
@@ -197,7 +202,12 @@ public class MapView : NSView
 			let mapCoords = offsetLocation(fromRoom.location, direction: exit.direction, distance: 240)
 			if let targetLoc = windowCoordsFromMap2DCoords(mapCoords) {
 			    path.lineToPoint(targetLoc)
+			    if (fromRoom._id == _currentRoomId || toRoom._id == _currentRoomId) {
+				path.lineWidth = 2;
+				NSColor.redColor().setStroke()
+			    } else {
 			    NSColor.blackColor().setStroke()
+			    }
 			    path.stroke();
 			    let zoneDot = NSBezierPath(ovalInRect: NSMakeRect(targetLoc.x - _zoom/3, targetLoc.y - _zoom/3, 2*_zoom/3, 2*_zoom/3))
 			    NSColor.grayColor().setFill()
@@ -208,6 +218,22 @@ public class MapView : NSView
             } else {
                 Swift.print("Skipping \(exit) because either fromRoom or toRoom is nil.")
             }
+	} else {
+	    // Up or down
+	    if let fromRoom = exit.fromRoom {
+		if let fromLoc = roomDrawLocation(fromRoom) {
+		    if NSPointInRect(fromLoc, bounds) {
+			let yFac: CGFloat = (exit.direction == 9) ? 1 : -1
+			let path = NSBezierPath(ovalInRect: NSMakeRect(fromLoc.x + 2*_zoom / 3, fromLoc.y + yFac * 2 * _zoom / 3, _zoom / 4, _zoom / 4))
+			if (fromRoom._id == _currentRoomId) {
+			    NSColor.redColor().setFill()
+			} else {
+			    NSColor.blackColor().setFill()
+			}
+			path.fill()
+		    }
+		}
+	    }
         }
     }
     
