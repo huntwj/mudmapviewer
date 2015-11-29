@@ -15,7 +15,7 @@ public class MapRoom : CustomStringConvertible, Hashable {
     public private(set) var zoneId: Int64
     let _name: String
     let _roomDescription: String
-    let location: Coordinate3D<Int64>
+    let location: Coordinate3D<CGFloat>
     let _pathingCost: Float64
     let color: NSColor
     let _enabled: Bool
@@ -28,7 +28,7 @@ public class MapRoom : CustomStringConvertible, Hashable {
         self.zoneId = zoneId
         self._name = name
         self._roomDescription = roomDesc
-        self.location = location
+        self.location = Coordinate3D<CGFloat>(x: CGFloat(location.x), y: CGFloat(location.y), z: CGFloat(location.z))
         self._pathingCost = pathingEntryCost
         self.color = color
         self._enabled = enabled
