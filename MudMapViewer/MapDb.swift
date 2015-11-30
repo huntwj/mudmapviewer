@@ -23,6 +23,8 @@ class MapDb {
         let objId = Expression<Int64>("ObjID")
         let zoneId = Expression<Int64>("ZoneID")
         let name = Expression<String>("Name")
+        let idName = Expression<String>("IDName")
+        let labelDirCol = Expression<Int>("LabelDir")
         let desc = Expression<String>("Desc")
         let color = Expression<Int64>("Color")
         
@@ -32,7 +34,7 @@ class MapDb {
         
         let query = roomTable.filter(objId == roomId)
         for room in _db.prepare(query) {
-            return MapRoom(db: self, id: room[objId], zoneId: room[zoneId],name: room[name], roomDesc: room[desc], location: Coordinate3D<Int64>(x: room[x], y: room[y], z: room[z]), pathingEntryCost: 0.0, color: colorFromInt(room[color]), enabled: true)
+            return MapRoom(db: self, id: room[objId], zoneId: room[zoneId],name: room[name], roomDesc: room[desc], location: Coordinate3D<Int64>(x: room[x], y: room[y], z: room[z]), idName: room[idName], labelDir: room[labelDirCol]+1, pathingEntryCost: 0.0, color: colorFromInt(room[color]), enabled: true)
         }
         
         return nil
@@ -44,6 +46,8 @@ class MapDb {
         let objId = Expression<Int64>("ObjID")
         let zoneId = Expression<Int64>("ZoneID")
         let name = Expression<String>("Name")
+        let idName = Expression<String>("IDName")
+        let labelDirCol = Expression<Int>("LabelDir")
         let desc = Expression<String>("Desc")
         let color = Expression<Int64>("Color")
         let x = Expression<Int64>("X")
@@ -60,7 +64,7 @@ class MapDb {
         var roomsMap = [Int64: MapRoom]()
         let stmt = _db.prepare(query)
         for room in stmt {
-            roomsMap[room[objId]] = MapRoom(db: self, id: room[objId], zoneId: room[zoneId],name: room[name], roomDesc: room[desc], location: Coordinate3D<Int64>(x: room[x], y: room[y], z: room[z]), pathingEntryCost: 0.0, color: colorFromInt(room[color]), enabled: true)
+            roomsMap[room[objId]] = MapRoom(db: self, id: room[objId], zoneId: room[zoneId],name: room[name], roomDesc: room[desc], location: Coordinate3D<Int64>(x: room[x], y: room[y], z: room[z]), idName: room[idName], labelDir: room[labelDirCol]+1, pathingEntryCost: 0.0, color: colorFromInt(room[color]), enabled: true)
         }
         
         
