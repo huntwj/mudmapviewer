@@ -19,7 +19,7 @@ public class MapRoom : CustomStringConvertible, Hashable {
     let _pathingCost: Float64
     let color: NSColor
     let _enabled: Bool
-    
+
     var _exits = [MapExit]()
     
     init(db: MapDb, id:Int64, zoneId: Int64, name: String, roomDesc: String, location: Coordinate3D<Int64>, pathingEntryCost: Float64, color: NSColor, enabled: Bool) {

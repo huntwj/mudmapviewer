@@ -161,14 +161,18 @@ public class MapView : NSView
         return heading
     }
     
-    func offsetLocation(location: Coordinate3D<CGFloat>, direction dir: Int, distance dist: Double) -> NSPoint {
+    func offsetLocation(location: NSPoint, direction dir: Int, distance dist: CGFloat) -> NSPoint {
         // East  : 3 -> 5 -> 6 -> 6 pi / 4 = 3 pi / 2 -> 4 pi / 2
         // North : 1 -> 7 -> 8 -> 8 pi / 4 = 2 pi     -> 5 pi / 2
         // West  : 7 -> 1 -> 2 -> 2 pi / 4 = pi / 2   -> pi
         // South : 5 -> 3 -> 4 -> 4 pi / 4 = pi       -> 3 pi / 2
+
         let heading = headingFromDirection(dir)
-        let x = Double(location.x) + cos(heading) * dist
-        let y = Double(location.y) - sin(heading) * dist
+	Swift.print("Heading \(heading * 360.0 / 2 / M_PI)")
+	let dx = CGFloat(cos(heading)) * dist
+	let x = location.x + dx
+	let dy = 0.0 + CGFloat(sin(heading)) * dist
+	let y = location.y + dy
         
         return NSPoint(x: x, y: y)
     }
@@ -177,12 +181,21 @@ public class MapView : NSView
         if (exit.direction < 9) {
             if let fromRoom = exit.fromRoom, toRoom = exit.toRoom {
                 if let fromLoc = roomDrawLocation(fromRoom) {
+		    let path = NSBezierPath()
+		    path.moveToPoint(offsetLocation(fromLoc, direction: exit.direction, distance: _zoom / 2))
+		    path.lineToPoint(offsetLocation(fromLoc, direction: exit.direction, distance: _zoom))
                     if (toRoom.zoneId == fromRoom.zoneId) {
+			if (exit.directionTo < 9) {
                         if let toLoc = roomDrawLocation(toRoom) {
                             if (NSPointInRect(fromLoc, bounds) || NSPointInRect(toLoc, bounds)) {
-                                let path = NSBezierPath()
-                                path.moveToPoint(fromLoc)
-                                path.lineToPoint(toLoc)
+				    path.lineToPoint(offsetLocation(toLoc, direction: exit.directionTo, distance: _zoom))
+				    path.lineToPoint(offsetLocation(toLoc, direction: exit.directionTo, distance: _zoom / 2))
+    //                                path.lineToPoint(toLoc)
+				}
+			    } else {
+				Swift.print("Skipping \(exit) because fromLoc or toLoc was nil.")
+			    }
+			}
                                 if (fromRoom._id == _currentRoomId || toRoom._id == _currentRoomId) {
                                     path.lineWidth = 2;
                                     NSColor.redColor().setStroke()
@@ -190,16 +203,11 @@ public class MapView : NSView
                                     NSColor.blackColor().setStroke()
                                 }
                                 path.stroke()
-                            }
-                        } else {
-                            Swift.print("Skipping \(exit) because fromLoc or toLoc was nil.")
-                        }
                     } else {
                         // Zone boundary. Draw a line to an imaginary square.
-                        let path = NSBezierPath()
-                        path.moveToPoint(fromLoc)
-                        let mapCoords = offsetLocation(fromRoom.location, direction: exit.direction, distance: 240)
-                        if let targetLoc = windowCoordsFromMap2DCoords(mapCoords) {
+			let mapCoords = NSPoint(x: fromRoom.location.x, y: fromRoom.location.y)
+			if let windowCoords = windowCoordsFromMap2DCoords(mapCoords) {
+			    let targetLoc = offsetLocation(windowCoords, direction: exit.direction, distance: 2 * _zoom)
                             path.lineToPoint(targetLoc)
                             if (fromRoom._id == _currentRoomId || toRoom._id == _currentRoomId) {
                                 path.lineWidth = 2;
