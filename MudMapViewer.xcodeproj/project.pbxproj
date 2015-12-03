@@ -10,6 +10,7 @@
 		B8109A521C02A7E400035012 /* MapExit.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8109A511C02A7E400035012 /* MapExit.swift */; };
 		B8109A531C02A7E400035012 /* MapExit.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8109A511C02A7E400035012 /* MapExit.swift */; };
 		B8109A541C02A7E400035012 /* MapExit.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8109A511C02A7E400035012 /* MapExit.swift */; };
+		B81962AD1C10F94000C04020 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = B81962AC1C10F94000C04020 /* main.swift */; };
 		B83F31F41BF6DA1000EFE2A6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83F31F31BF6DA1000EFE2A6 /* AppDelegate.swift */; };
 		B83F31F61BF6DA1000EFE2A6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83F31F51BF6DA1000EFE2A6 /* ViewController.swift */; };
 		B83F31F81BF6DA1000EFE2A6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B83F31F71BF6DA1000EFE2A6 /* Assets.xcassets */; };
@@ -51,6 +52,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		B81962A81C10F94000C04020 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		B83F32211BF6EB5800EFE2A6 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -65,6 +75,8 @@
 
 /* Begin PBXFileReference section */
 		B8109A511C02A7E400035012 /* MapExit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapExit.swift; sourceTree = "<group>"; };
+		B81962AA1C10F94000C04020 /* SendMapEvent */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SendMapEvent; sourceTree = BUILT_PRODUCTS_DIR; };
+		B81962AC1C10F94000C04020 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		B83F31F01BF6DA1000EFE2A6 /* MudMapViewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MudMapViewer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B83F31F31BF6DA1000EFE2A6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B83F31F51BF6DA1000EFE2A6 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -86,6 +98,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		B81962A71C10F94000C04020 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B83F31ED1BF6DA1000EFE2A6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -113,6 +132,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B81962AB1C10F94000C04020 /* SendMapEvent */ = {
+			isa = PBXGroup;
+			children = (
+				B81962AC1C10F94000C04020 /* main.swift */,
+			);
+			path = SendMapEvent;
+			sourceTree = "<group>";
+		};
 		B83F31E71BF6DA1000EFE2A6 = {
 			isa = PBXGroup;
 			children = (
@@ -121,6 +148,7 @@
 				B83F31F21BF6DA1000EFE2A6 /* MudMapViewer */,
 				B83F32041BF6DA1000EFE2A6 /* MudMapViewerTests */,
 				B83F320F1BF6DA1000EFE2A6 /* MudMapViewerUITests */,
+				B81962AB1C10F94000C04020 /* SendMapEvent */,
 				B83F31F11BF6DA1000EFE2A6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -131,6 +159,7 @@
 				B83F31F01BF6DA1000EFE2A6 /* MudMapViewer.app */,
 				B83F32011BF6DA1000EFE2A6 /* MudMapViewerTests.xctest */,
 				B83F320C1BF6DA1000EFE2A6 /* MudMapViewerUITests.xctest */,
+				B81962AA1C10F94000C04020 /* SendMapEvent */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -181,6 +210,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		B81962A91C10F94000C04020 /* SendMapEvent */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B81962B01C10F94000C04020 /* Build configuration list for PBXNativeTarget "SendMapEvent" */;
+			buildPhases = (
+				B81962A61C10F94000C04020 /* Sources */,
+				B81962A71C10F94000C04020 /* Frameworks */,
+				B81962A81C10F94000C04020 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SendMapEvent;
+			productName = SendMapEvent;
+			productReference = B81962AA1C10F94000C04020 /* SendMapEvent */;
+			productType = "com.apple.product-type.tool";
+		};
 		B83F31EF1BF6DA1000EFE2A6 /* MudMapViewer */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B83F32151BF6DA1000EFE2A6 /* Build configuration list for PBXNativeTarget "MudMapViewer" */;
@@ -246,6 +292,9 @@
 				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = "William Hunt";
 				TargetAttributes = {
+					B81962A91C10F94000C04020 = {
+						CreatedOnToolsVersion = 7.1.1;
+					};
 					B83F31EF1BF6DA1000EFE2A6 = {
 						CreatedOnToolsVersion = 7.1.1;
 					};
@@ -275,6 +324,7 @@
 				B83F31EF1BF6DA1000EFE2A6 /* MudMapViewer */,
 				B83F32001BF6DA1000EFE2A6 /* MudMapViewerTests */,
 				B83F320B1BF6DA1000EFE2A6 /* MudMapViewerUITests */,
+				B81962A91C10F94000C04020 /* SendMapEvent */,
 			);
 		};
 /* End PBXProject section */
@@ -323,6 +373,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		B81962A61C10F94000C04020 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B81962AD1C10F94000C04020 /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B83F31EC1BF6DA1000EFE2A6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -389,6 +447,20 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		B81962AE1C10F94000C04020 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		B81962AF1C10F94000C04020 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		B83F32131BF6DA1000EFE2A6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -572,6 +644,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		B81962B01C10F94000C04020 /* Build configuration list for PBXNativeTarget "SendMapEvent" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B81962AE1C10F94000C04020 /* Debug */,
+				B81962AF1C10F94000C04020 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		B83F31EB1BF6DA1000EFE2A6 /* Build configuration list for PBXProject "MudMapViewer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
