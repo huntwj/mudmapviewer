@@ -14,12 +14,19 @@ class ViewController: NSViewController {
         super.viewDidLoad()
     }
 
-    override var representedObject: AnyObject? {
+    override var representedObject: Any? {
         didSet {
         // Update the view, if already loaded.
         }
     }
 
+    
+    /* Swift */
+    @IBAction func unwindToMainMenu(_ sender: NSStoryboardSegue)
+    {
+        // let sourceViewController = sender.sourceController
+        // Pull any data from the view controller which initiated the unwind segue.
+    }
 
 }
 

@@ -8,13 +8,13 @@
 
 import Foundation
 
-func moveToRoom(targetRoom: String) {
-    let notificationCenter = NSDistributedNotificationCenter.defaultCenter()
-    notificationCenter.postNotificationName("MapViewUpdate", object: targetRoom, userInfo: nil, deliverImmediately: true)
+func moveToRoom(_ targetRoom: String) {
+    let notificationCenter = DistributedNotificationCenter.default()
+    notificationCenter.postNotificationName(NSNotification.Name(rawValue: "MapViewUpdate"), object: targetRoom, userInfo: nil, deliverImmediately: true)
 }
 
-if Process.arguments.count > 1 {
-    let targetRoom = Process.arguments[1]
+if CommandLine.arguments.count > 1 {
+    let targetRoom = CommandLine.arguments[1]
     moveToRoom(targetRoom)
 } else {
     print("No target room specified.")

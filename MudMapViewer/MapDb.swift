@@ -18,7 +18,7 @@ class MapDb {
         _db = try Connection("/Users/wilh/tf.old/wotmud/map/test.dbm")
     }
     
-    func getRoomById(roomId : Int64) -> MapRoom? {
+    func getRoomById(_ roomId : Int64) throws -> MapRoom? {
         let roomTable = Table("ObjectTbl")
         let objId = Expression<Int64>("ObjID")
         let zoneId = Expression<Int64>("ZoneID")
@@ -33,14 +33,14 @@ class MapDb {
         let z = Expression<Int64>("Z")
         
         let query = roomTable.filter(objId == roomId)
-        for room in _db.prepare(query) {
+        for room in try _db.prepare(query) {
             return MapRoom(db: self, id: room[objId], zoneId: room[zoneId],name: room[name], roomDesc: room[desc], location: Coordinate3D<Int64>(x: room[x], y: room[y], z: room[z]), idName: room[idName], labelDir: room[labelDirCol]+1, pathingEntryCost: 0.0, color: colorFromInt(room[color]), enabled: true)
         }
         
         return nil
     }
     
-    func getRoomsByZoneId(targetZoneId : Int64) -> [Int64: MapRoom] {
+    func getRoomsByZoneId(_ targetZoneId : Int64) throws -> [Int64: MapRoom] {
         let roomTable = Table("ObjectTbl")
         let exitTable = Table("ExitTbl")
         let objId = Expression<Int64>("ObjID")
@@ -62,14 +62,14 @@ class MapDb {
         
         let query = roomTable.filter(zoneId == targetZoneId)
         var roomsMap = [Int64: MapRoom]()
-        let stmt = _db.prepare(query)
+        let stmt = try _db.prepare(query)
         for room in stmt {
             roomsMap[room[objId]] = MapRoom(db: self, id: room[objId], zoneId: room[zoneId],name: room[name], roomDesc: room[desc], location: Coordinate3D<Int64>(x: room[x], y: room[y], z: room[z]), idName: room[idName], labelDir: room[labelDirCol]+1, pathingEntryCost: 0.0, color: colorFromInt(room[color]), enabled: true)
         }
         
         
         let exitQuery = exitTable.filter(roomsMap.keys.contains(fromIdCol))
-        let allExits = _db.prepare(exitQuery)
+        let allExits = try _db.prepare(exitQuery)
         for exit in allExits {
             let mapExit = MapExit(db: self, id: exit[exitIdCol], fromRoomId: exit[fromIdCol], toRoomId: exit[toIdCol], direction: exit[directionCol]+1, directionTo: exit[directionToCol]+1)
             mapExit._toRoom = roomsMap[exit[toIdCol]]
@@ -80,7 +80,7 @@ class MapDb {
         return roomsMap
     }
     
-    func colorFromInt(colorInt: Int64) -> NSColor {
+    func colorFromInt(_ colorInt: Int64) -> NSColor {
         let byteSize: Int64 = 256
         let redInt = colorInt % byteSize
         var left = (colorInt - redInt) / byteSize

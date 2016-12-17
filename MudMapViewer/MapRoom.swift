@@ -9,10 +9,10 @@
 import Foundation
 import AppKit
 
-public class MapRoom : CustomStringConvertible, Hashable {
+open class MapRoom : CustomStringConvertible, Hashable {
     var _db: MapDb
     let _id: Int64
-    public private(set) var zoneId: Int64
+    open fileprivate(set) var zoneId: Int64
     let _name: String
     let _idName: String
     let _labelDir: Int
@@ -38,19 +38,19 @@ public class MapRoom : CustomStringConvertible, Hashable {
         self._enabled = enabled
     }
     
-    public var description: String {
+    open var description: String {
         return "<MapRoom id=\(self._id) zoneId=\(self.zoneId) name='\(self._name)' desc='\(self._roomDescription)' location=\(self.location) cost=\(self._pathingCost) color=\(self.color) enabled=\(self._enabled ? "true" : "false")/>"
     }
     
-    public var hashValue: Int {
+    open var hashValue: Int {
         return _id.hashValue
     }
     
-    public var locationAsPoint: NSPoint {
+    open var locationAsPoint: NSPoint {
         return NSPoint(x: CGFloat(location.x), y: CGFloat(location.y))
     }
     
-    func addExit(exit: MapExit) {
+    func addExit(_ exit: MapExit) {
         self._exits.append(exit)
     }
     

@@ -31,14 +31,18 @@ class MapExit : CustomStringConvertible, Hashable
     
     var fromRoom: MapRoom? {
         if (_fromRoom == nil) {
-            _fromRoom = _db.getRoomById(_fromRoomId)
+            do {
+                _fromRoom = try _db.getRoomById(_fromRoomId)
+            } catch {}
         }
         return _fromRoom
     }
     
     var toRoom: MapRoom? {
         if (_toRoom == nil) {
-            _toRoom = _db.getRoomById(_toRoomId)
+            do {
+                _toRoom = try _db.getRoomById(_toRoomId)
+            } catch {}
         }
         return _toRoom
     }
