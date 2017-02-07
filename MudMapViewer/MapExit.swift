@@ -16,17 +16,19 @@ class MapExit : CustomStringConvertible, Hashable
     let _toRoomId: Int64
     let direction: Int
     let directionTo: Int
+    let _oneWay: Bool
     
     var _fromRoom: MapRoom?
     var _toRoom: MapRoom?
     
-    init(db: MapDb, id: Int64, fromRoomId: Int64, toRoomId: Int64, direction: Int, directionTo: Int) {
+    init(db: MapDb, id: Int64, fromRoomId: Int64, toRoomId: Int64, direction: Int, directionTo: Int, oneWay: Bool = false) {
         _db = db
         _id = id
         _fromRoomId = fromRoomId
         _toRoomId = toRoomId
         self.direction = direction
         self.directionTo = directionTo
+        _oneWay = oneWay
     }
     
     var fromRoom: MapRoom? {

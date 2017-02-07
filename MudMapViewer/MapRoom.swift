@@ -14,7 +14,7 @@ open class MapRoom : CustomStringConvertible, Hashable {
     let _id: Int64
     open fileprivate(set) var zoneId: Int64
     let _name: String
-    let _idName: String
+    let _idName: String?
     let _labelDir: Int
     let _roomDescription: String
     let location: Coordinate3D<CGFloat>
@@ -24,7 +24,7 @@ open class MapRoom : CustomStringConvertible, Hashable {
 
     var _exits = [MapExit]()
     
-    init(db: MapDb, id:Int64, zoneId: Int64, name: String, roomDesc: String, location: Coordinate3D<Int64>, idName: String, labelDir: Int, pathingEntryCost: Float64, color: NSColor, enabled: Bool) {
+    init(db: MapDb, id:Int64, zoneId: Int64, name: String, roomDesc: String, location: Coordinate3D<Int64>, idName: String?, labelDir: Int, pathingEntryCost: Float64, color: NSColor, enabled: Bool) {
         self._db = db
         self._id = id
         self.zoneId = zoneId

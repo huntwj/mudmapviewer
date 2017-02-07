@@ -15,7 +15,7 @@ class MapDb {
     var _db: Connection!
     
     init() throws {
-        _db = try Connection("/Users/wilh/tf.old/wotmud/map/test.dbm")
+        _db = try Connection("/Users/wilh/tf-npm/data/map.sqlite")
     }
     
     func getRoomById(_ roomId : Int64) throws -> MapRoom? {
@@ -59,19 +59,21 @@ class MapDb {
         let fromIdCol = Expression<Int64>("FromID")
         let directionCol = Expression<Int>("DirType")
         let directionToCol = Expression<Int>("DirToType")
+        let exitIdToCol = Expression<Int>("ExitIDTo")
         
         let query = roomTable.filter(zoneId == targetZoneId)
         var roomsMap = [Int64: MapRoom]()
         let stmt = try _db.prepare(query)
         for room in stmt {
-            roomsMap[room[objId]] = MapRoom(db: self, id: room[objId], zoneId: room[zoneId],name: room[name], roomDesc: room[desc], location: Coordinate3D<Int64>(x: room[x], y: room[y], z: room[z]), idName: room[idName], labelDir: room[labelDirCol]+1, pathingEntryCost: 0.0, color: colorFromInt(room[color]), enabled: true)
+            let roomIdName = room[idName].utf8.count > 0 ? room[idName] : nil
+            roomsMap[room[objId]] = MapRoom(db: self, id: room[objId], zoneId: room[zoneId],name: room[name], roomDesc: room[desc], location: Coordinate3D<Int64>(x: room[x], y: room[y], z: room[z]), idName: roomIdName, labelDir: room[labelDirCol]+1, pathingEntryCost: 0.0, color: colorFromInt(room[color]), enabled: true)
         }
         
         
         let exitQuery = exitTable.filter(roomsMap.keys.contains(fromIdCol))
         let allExits = try _db.prepare(exitQuery)
         for exit in allExits {
-            let mapExit = MapExit(db: self, id: exit[exitIdCol], fromRoomId: exit[fromIdCol], toRoomId: exit[toIdCol], direction: exit[directionCol]+1, directionTo: exit[directionToCol]+1)
+            let mapExit = MapExit(db: self, id: exit[exitIdCol], fromRoomId: exit[fromIdCol], toRoomId: exit[toIdCol], direction: exit[directionCol]+1, directionTo: exit[directionToCol]+1, oneWay: exit[exitIdToCol] == -1)
             mapExit._toRoom = roomsMap[exit[toIdCol]]
             mapExit._fromRoom = roomsMap[exit[fromIdCol]]
             roomsMap[exit[fromIdCol]]?.addExit(mapExit)

@@ -11,7 +11,7 @@ import AppKit
 
 open class MapView : NSView
 {
-    var _currentRoomId: Int64? = 1171
+    var _currentRoomId: Int64? = 4225
     
     var _currentRoom: MapRoom?
     var _centerLocation: Coordinate3D<CGFloat>?
@@ -36,7 +36,14 @@ open class MapView : NSView
     // TODO: Move this to AppDelegate or somewhere else more appropriate.
     open func updateState(_ notification: Notification) {
         if let str = notification.object as? NSString {
-            if let roomIdx = Int64(str as String) {
+            if (str == "reload") {
+                do {
+                    try asyncLoadMapElements()
+                } catch {
+                    // Swallow?
+                }
+            }
+            else if let roomIdx = Int64(str as String) {
                 if (_currentRoomId != roomIdx) {
                     _currentRoomId = roomIdx
                     if let newRoom = _rooms[roomIdx] {
@@ -159,12 +166,53 @@ open class MapView : NSView
     
     func drawRoom(_ room: MapRoom, rect: NSRect) {
         if let targetLoc = roomDrawLocation(room) {
-            let path = NSBezierPath(rect: NSMakeRect(targetLoc.x - _zoom/2, targetLoc.y - _zoom/2, _zoom, _zoom))
+            let adjustedLoc = NSMakeRect(targetLoc.x - _zoom/2, targetLoc.y - _zoom/2, _zoom, _zoom)
+            let path = NSBezierPath(rect: adjustedLoc)
             room.color.setFill()
             path.fill()
-            
-//            let idName: NSString = room._idName
-//            idName.drawAtPoint(offsetLocation(targetLoc, direction: room._labelDir, distance: _zoom), withAttributes: nil)
+            NSColor.black.setStroke();
+            if let idName: String = room._idName {
+                let maxWidth: CGFloat = 1000.0
+                let adjZoom = 1.25 * _zoom
+                let textRect: NSRect
+                let paraStyle = NSMutableParagraphStyle()
+                switch room._labelDir {
+                case 1:
+                    paraStyle.alignment = NSTextAlignment.center
+                    textRect = NSMakeRect(adjustedLoc.origin.x - maxWidth / 2 + _zoom / 2,
+                                          adjustedLoc.origin.y, maxWidth, 2 * adjZoom)
+                case 2:
+                    textRect = NSMakeRect(adjustedLoc.origin.x + adjZoom, adjustedLoc.origin.y, maxWidth, 2 * adjZoom)
+                case 3:
+                    textRect = NSMakeRect(adjustedLoc.origin.x + adjZoom, adjustedLoc.origin.y - adjZoom, maxWidth, 2 * adjZoom)
+                case 4:
+                    textRect = NSMakeRect(adjustedLoc.origin.x + adjZoom, adjustedLoc.origin.y - 2 * adjZoom, maxWidth, 2 * adjZoom)
+                case 5:
+                    paraStyle.alignment = NSTextAlignment.center
+                    textRect = NSMakeRect(adjustedLoc.origin.x - maxWidth / 2 + _zoom / 2, adjustedLoc.origin.y - 2 * adjZoom, maxWidth, 2 * adjZoom)
+                case 6:
+                    paraStyle.alignment = NSTextAlignment.right
+                    textRect = NSMakeRect(adjustedLoc.origin.x - maxWidth, adjustedLoc.origin.y - 2 * adjZoom, maxWidth, 2 * adjZoom)
+                case 7:
+                    paraStyle.alignment = NSTextAlignment.right
+                    textRect = NSMakeRect(adjustedLoc.origin.x - maxWidth - adjZoom / 8, adjustedLoc.origin.y - adjZoom, maxWidth, 2 * adjZoom)
+                case 8:
+                    paraStyle.alignment = NSTextAlignment.right
+                    textRect = NSMakeRect(adjustedLoc.origin.x - maxWidth - adjZoom / 8, adjustedLoc.origin.y, maxWidth, 2 * adjZoom)
+                case 10:
+                    paraStyle.alignment = NSTextAlignment.center
+                    textRect = NSMakeRect(adjustedLoc.origin.x - maxWidth / 2 + _zoom / 2,
+                                          adjustedLoc.origin.y - adjZoom, maxWidth, 2 * adjZoom)
+                case 11:
+                    paraStyle.alignment = NSTextAlignment.center
+                    textRect = NSMakeRect(adjustedLoc.origin.x - maxWidth / 2 + _zoom / 2,
+                                          adjustedLoc.origin.y - adjZoom, maxWidth, 2 * adjZoom)
+                default:
+                    return
+                }
+                let attributes = [NSParagraphStyleAttributeName: paraStyle]
+                idName.draw(in: textRect, withAttributes: attributes);
+            }
         }
     }
     
@@ -180,13 +228,32 @@ open class MapView : NSView
         // South : 5 -> 3 -> 4 -> 4 pi / 4 = pi       -> 3 pi / 2
         
         let heading = headingFromDirection(dir)
-        Swift.print("Heading \(heading * 360.0 / 2 / M_PI)")
-        let dx = CGFloat(cos(heading)) * dist
+        var dx = CGFloat(cos(heading)) * dist
+        var dy = 0.0 + CGFloat(sin(heading)) * dist
+        if (dir % 2 == 0) {
+            dx *= sqrt(2.0)
+            dy *= sqrt(2.0)
+        }
         let x = location.x + dx
-        let dy = 0.0 + CGFloat(sin(heading)) * dist
         let y = location.y + dy
         
         return NSPoint(x: x, y: y)
+    }
+    
+    func hypot(v: NSPoint) -> CGFloat {
+        return sqrt(v.x*v.x + v.y*v.y)
+    }
+    
+    func arrowCap(path: NSBezierPath, v1: NSPoint, v2: NSPoint) {
+        let diff = NSPoint(x: (v2.x - v1.x) / 2, y: (v2.y - v1.y) / 2)
+        let perp = NSPoint(x: -diff.y, y: diff.x)
+        let hyp = hypot(v: perp)
+        let unitPerp = NSPoint(x: _zoom * perp.x / hyp / 4, y: _zoom * perp.y / hyp / 4)
+        let start = NSPoint(x: v1.x + diff.x + unitPerp.x, y: v1.y + diff.y + unitPerp.y)
+        let finish = NSPoint(x: v1.x + diff.x - unitPerp.x, y: v1.y + diff.y - unitPerp.y)
+        path.move(to: start)
+        path.line(to: v2)
+        path.line(to: finish)
     }
     
     func drawExit(_ exit: MapExit, rect: NSRect) {
@@ -200,16 +267,21 @@ open class MapView : NSView
                         if (exit.directionTo < 9) {
                             if let toLoc = roomDrawLocation(toRoom) {
                                 if (NSPointInRect(fromLoc, bounds) || NSPointInRect(toLoc, bounds)) {
-                                    path.line(to: offsetLocation(toLoc, direction: exit.directionTo, distance: _zoom))
-                                    path.line(to: offsetLocation(toLoc, direction: exit.directionTo, distance: _zoom / 2))
+                                    let v1 = offsetLocation(toLoc, direction: exit.directionTo, distance: _zoom)
+                                    path.line(to: v1)
+                                    let v2 = offsetLocation(toLoc, direction: exit.directionTo, distance: _zoom / 2)
+                                    path.line(to: v2)
     //                                path.lineToPoint(toLoc)
+                                    if (exit._oneWay) {
+                                        arrowCap(path: path, v1: v1, v2: v2)
+                                    }
                                 }
                             } else {
                                 Swift.print("Skipping \(exit) because fromLoc or toLoc was nil.")
                             }
                         }
                         if (fromRoom._id == _currentRoomId || toRoom._id == _currentRoomId) {
-                            path.lineWidth = 2;
+//                            path.lineWidth = 2;
                             NSColor.red.setStroke()
                         } else {
                             NSColor.black.setStroke()
@@ -222,7 +294,7 @@ open class MapView : NSView
                             let targetLoc = offsetLocation(windowCoords, direction: exit.direction, distance: 2 * _zoom)
                             path.line(to: targetLoc)
                             if (fromRoom._id == _currentRoomId || toRoom._id == _currentRoomId) {
-                                path.lineWidth = 2;
+//                                path.lineWidth = 2;
                                 NSColor.red.setStroke()
                             } else {
                                 NSColor.black.setStroke()
