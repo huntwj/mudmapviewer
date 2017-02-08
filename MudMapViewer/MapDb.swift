@@ -60,6 +60,7 @@ class MapDb {
         let directionCol = Expression<Int>("DirType")
         let directionToCol = Expression<Int>("DirToType")
         let exitIdToCol = Expression<Int>("ExitIDTo")
+        let doorNameCol = Expression<String>("Param")
         
         let query = roomTable.filter(zoneId == targetZoneId)
         var roomsMap = [Int64: MapRoom]()
@@ -73,7 +74,8 @@ class MapDb {
         let exitQuery = exitTable.filter(roomsMap.keys.contains(fromIdCol))
         let allExits = try _db.prepare(exitQuery)
         for exit in allExits {
-            let mapExit = MapExit(db: self, id: exit[exitIdCol], fromRoomId: exit[fromIdCol], toRoomId: exit[toIdCol], direction: exit[directionCol]+1, directionTo: exit[directionToCol]+1, oneWay: exit[exitIdToCol] == -1)
+            let doorName = exit[doorNameCol] == "" ? nil : exit[doorNameCol]
+            let mapExit = MapExit(db: self, id: exit[exitIdCol], fromRoomId: exit[fromIdCol], toRoomId: exit[toIdCol], direction: exit[directionCol]+1, directionTo: exit[directionToCol]+1, doorName: doorName, oneWay: exit[exitIdToCol] == -1)
             mapExit._toRoom = roomsMap[exit[toIdCol]]
             mapExit._fromRoom = roomsMap[exit[fromIdCol]]
             roomsMap[exit[fromIdCol]]?.addExit(mapExit)
