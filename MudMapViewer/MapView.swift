@@ -9,6 +9,32 @@
 import Foundation
 import AppKit
 
+typealias Vector = NSPoint
+prefix operator ⟂
+prefix func ⟂(_ v: Vector) -> Vector {
+    return Vector(x: -v.y, y: v.x)
+}
+infix operator ⋅ : MultiplicationPrecedence
+func ⋅(_ lhs: Vector, _ rhs: Vector) -> CGFloat {
+    return lhs.x * rhs.x + lhs.y * rhs.y
+}
+prefix operator ‖
+prefix func ‖(_ v: Vector) -> CGFloat {
+    return sqrt(v ⋅ v)
+}
+func +(_ a: Vector, _ b: Vector) -> Vector {
+    return Vector(x:a.x + b.x, y:a.y + b.y)
+}
+func -(_ a: Vector, _ b: Vector) -> Vector {
+    return Vector(x:a.x - b.x, y:a.y - b.y)
+}
+func /(_ v: Vector, _ s: CGFloat) -> Vector {
+    return Vector(x: v.x/s, y: v.y/s)
+}
+func *(_ v: Vector, _ s: CGFloat) -> Vector {
+    return Vector(x: v.x * s, y: v.y * s)
+}
+
 open class MapView : NSView
 {
     var _currentRoomId: Int64? = 4225
@@ -20,7 +46,7 @@ open class MapView : NSView
     var _rooms = [Int64: MapRoom]()
     
     var _zoom: CGFloat = 10
-    
+
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
 
@@ -263,30 +289,38 @@ open class MapView : NSView
         return NSPoint(x: x, y: y)
     }
     
-    func hypot(v: NSPoint) -> CGFloat {
-        return sqrt(v.x*v.x + v.y*v.y)
-    }
-    
+    //            start x
+    //                   \
+    //                     \
+    //                        \
+    //                          \
+    //                             \
+    //   v1 x           x           x v2
+    //       <- hdiff ->^          /
+    //                  |       /
+    //                 ⟂hdiff /
+    //                  |  /
+    //                  v/
+    //           finish x
     func arrowCap(path: NSBezierPath, v1: NSPoint, v2: NSPoint) {
-        let diff = NSPoint(x: (v2.x - v1.x) / 2, y: (v2.y - v1.y) / 2)
-        let perp = NSPoint(x: -diff.y, y: diff.x)
-        let hyp = hypot(v: perp)
-        let unitPerp = NSPoint(x: _zoom * perp.x / hyp / 4, y: _zoom * perp.y / hyp / 4)
-        let start = NSPoint(x: v1.x + diff.x + unitPerp.x, y: v1.y + diff.y + unitPerp.y)
-        let finish = NSPoint(x: v1.x + diff.x - unitPerp.x, y: v1.y + diff.y - unitPerp.y)
+        let halfDiff = (v2 - v1) / 2
+        let perp = ⟂halfDiff
+        let zoomScaledPerp = perp / ‖(perp) * _zoom / 4.0
+        let arrowBase = v1 + halfDiff
+        let start = arrowBase + zoomScaledPerp
+        let finish = arrowBase - zoomScaledPerp
         path.move(to: start)
         path.line(to: v2)
         path.line(to: finish)
     }
     
     func drawDoorRect(onPath path: NSBezierPath, between v1: NSPoint, and v2: NSPoint) {
-        let hdiff = NSPoint(x: (v2.x - v1.x) / 2.0, y: (v2.y - v1.y) / 2.0 )
-        let perp = NSPoint(x: -hdiff.y, y: hdiff.x)
-        let hypotPerp = hypot(v: perp)
-        let ePerp = NSPoint(x: perp.x * _zoom * 1.0 / hypotPerp / 3.0, y: perp.y * _zoom * 1.0 / hypotPerp / 3.0)
-        let mid = NSPoint(x: v1.x + hdiff.x, y: v1.y + hdiff.y)
-        let start = NSPoint(x: mid.x + ePerp.x, y: mid.y + ePerp.y)
-        let finish = NSPoint(x: mid.x - ePerp.x, y: mid.y - ePerp.y)
+        let halfDiff = (v2 - v1) / 2
+        let perp = ⟂halfDiff
+        let zoomScaledPerp = perp / ‖(perp) * _zoom  / 3.0
+        let mid = v1 + halfDiff
+        let start = mid + zoomScaledPerp
+        let finish = mid - zoomScaledPerp
         path.move(to: start)
         path.line(to: finish)
 
